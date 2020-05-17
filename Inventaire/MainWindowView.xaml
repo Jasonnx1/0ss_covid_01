@@ -23,7 +23,7 @@
             <Menu>
                 <MenuItem Header="_Fichier">
                     <MenuItem Header="_Ouvrir..."/>
-                    <MenuItem Header="_Sauvegarder"/>
+                    <MenuItem Header="_Sauvegarder" Command="{Binding SaveCommand}"/>
                     <MenuItem Header="_Fermer"/>
                     <Separator/>
                     <MenuItem Header="_Nouveau client"/>

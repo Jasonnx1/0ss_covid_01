@@ -123,6 +123,14 @@
                         Command="{Binding DeleteCustomerCommand}"
                         CommandParameter="{Binding SelectedCustomer}"/>
             </StackPanel>
+
+            <StackPanel Grid.Row="9" Grid.Column="0" Margin="6">
+                <Button Content="Sauvegarder"
+                        Command="{Binding SaveCommand}"
+                        CommandParameter="{Binding SelectedCustomer}"/>
+            </StackPanel>
+
+
         </Grid>
     </Grid>
 </UserControl>

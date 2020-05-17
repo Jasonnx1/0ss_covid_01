@@ -55,9 +55,13 @@ namespace BillingManagement.UI.ViewModels
 
 		public RelayCommand<IClosable> ExitClickCommand { get; private set; }
 
+		public RelayCommand<object> SaveCommand { get; set; }
 		
 
-
+		public void Save(object c)
+		{
+			db.SaveChanges();
+		}
 
 		public MainViewModel()
 		{
@@ -66,24 +70,21 @@ namespace BillingManagement.UI.ViewModels
 			DisplayCustomerCommand = new DelegateCommand<Customer>(DisplayCustomer);
 			ExitClickCommand = new RelayCommand<IClosable>(Exit);
 
+			SaveCommand = new RelayCommand<object>(Save);
+
 			AddNewItemCommand = new DelegateCommand<object>(AddNewItem, CanAddNewItem);
 			AddInvoiceToCustomerCommand = new DelegateCommand<Customer>(AddInvoiceToCustomer);
 			db = new BillingContext();
 			
-			seedData();
 
-			customerViewModel = new CustomerViewModel( new ObservableCollection<Customer>(db.Customers.OrderBy(c => c.LastName)), db);
-			invoiceViewModel = new InvoiceViewModel(new ObservableCollection<Invoice>(db.Invoices));
+			customerViewModel = new CustomerViewModel(db);
+			invoiceViewModel = new InvoiceViewModel(db);
 
 			VM = customerViewModel;
 
 		}
 
 
-		void seedData()
-		{
-			
-		}
 
 
 
@@ -114,9 +115,11 @@ namespace BillingManagement.UI.ViewModels
 
 		private void AddInvoiceToCustomer(Customer c)
 		{
-			var invoice = new Invoice(c);
-			c.Invoices.Add(invoice);
+			var invoice = new Invoice(c) { SubTotal = 0.0f};
+			db.Invoices.Add(invoice);
+			db.SaveChanges();
 			DisplayInvoice(invoice);
+			invoiceViewModel.load();
 		}
 
 		private void AddNewItem (object item)
@@ -126,8 +129,7 @@ namespace BillingManagement.UI.ViewModels
 				var c = new Customer() { Name = "TBD", LastName = "TBD" };
 				db.Customers.Add(c);
 				db.SaveChanges();
-				customerViewModel.Customers.Clear();
-				customerViewModel.Customers = new ObservableCollection<Customer>(db.Customers.OrderBy(c => c.LastName));
+				customerViewModel.load();
 				customerViewModel.SelectedCustomer = c;
 			}
 		}

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 
 namespace BillingManagement.UI.ViewModels
 {
@@ -11,10 +12,18 @@ namespace BillingManagement.UI.ViewModels
 	{
 		private Invoice selectedInvoice;
 		private ObservableCollection<Invoice> invoices;
-
-		public InvoiceViewModel(ObservableCollection<Invoice> i)
+		BillingContext db { get; set; }
+		public InvoiceViewModel(BillingContext _db)
 		{
-			Invoices = i;
+			Invoices = new ObservableCollection<Invoice>();
+			db = _db;
+			load();
+		}
+
+		public void load()
+		{
+			Invoices.Clear();
+			Invoices = new ObservableCollection<Invoice>(db.Invoices);
 		}
 
 		public Invoice SelectedInvoice

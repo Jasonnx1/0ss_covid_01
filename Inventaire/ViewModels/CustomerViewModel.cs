@@ -36,15 +36,28 @@ namespace BillingManagement.UI.ViewModels
         }
 
         public RelayCommand<Customer> DeleteCustomerCommand { get; private set; }
+        public RelayCommand<object> SaveCommand { get; set; }
 
         // CTOR
-        public CustomerViewModel(ObservableCollection<Customer> c, BillingContext _db)
+        public CustomerViewModel(BillingContext _db)
         {
             DeleteCustomerCommand = new RelayCommand<Customer>(DeleteCustomer, CanDeleteCustomer);
+            SaveCommand = new RelayCommand<object>(Save);
+            Customers = new ObservableCollection<Customer>();
 
-            Customers = c;
             db = _db;
-            
+            load();
+        }
+
+        public void load()
+        {
+            Customers.Clear();
+            Customers = new ObservableCollection<Customer>(db.Customers.OrderBy(c => c.LastName));
+        }
+
+        public void Save(object c)
+        {
+            db.SaveChanges();
         }
 
         private void DeleteCustomer(Customer c)
