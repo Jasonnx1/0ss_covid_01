@@ -1,5 +1,4 @@
-﻿using BillingManagement.Business;
-using BillingManagement.Models;
+﻿using BillingManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,10 +12,9 @@ namespace BillingManagement.UI.ViewModels
 		private Invoice selectedInvoice;
 		private ObservableCollection<Invoice> invoices;
 
-		public InvoiceViewModel(IEnumerable<Customer> customerData)
+		public InvoiceViewModel(ObservableCollection<Invoice> i)
 		{
-			InvoicesDataService ids = new InvoicesDataService(customerData);
-			Invoices = new ObservableCollection<Invoice>(ids.GetAll().ToList());
+			Invoices = i;
 		}
 
 		public Invoice SelectedInvoice

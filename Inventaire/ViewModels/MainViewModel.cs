@@ -52,11 +52,13 @@ namespace BillingManagement.UI.ViewModels
 		public DelegateCommand<Customer> AddInvoiceToCustomerCommand { get; private set; }
 
 
+
 		public MainViewModel()
 		{
 			ChangeViewCommand = new ChangeViewCommand(ChangeView);
 			DisplayInvoiceCommand = new DelegateCommand<Invoice>(DisplayInvoice);
 			DisplayCustomerCommand = new DelegateCommand<Customer>(DisplayCustomer);
+			
 
 			AddNewItemCommand = new DelegateCommand<object>(AddNewItem, CanAddNewItem);
 			AddInvoiceToCustomerCommand = new DelegateCommand<Customer>(AddInvoiceToCustomer);
@@ -64,8 +66,8 @@ namespace BillingManagement.UI.ViewModels
 			
 			seedData();
 
-			customerViewModel = new CustomerViewModel( new ObservableCollection<Customer>(db.Customers.OrderBy(c => c.LastName)) );
-			invoiceViewModel = new InvoiceViewModel(customerViewModel.Customers);
+			customerViewModel = new CustomerViewModel( new ObservableCollection<Customer>(db.Customers.OrderBy(c => c.LastName)), db);
+			invoiceViewModel = new InvoiceViewModel(new ObservableCollection<Invoice>(db.Invoices));
 
 			VM = customerViewModel;
 
@@ -74,11 +76,6 @@ namespace BillingManagement.UI.ViewModels
 
 		void seedData()
 		{
-
-			db.Customers.Add(new Customer() { LastName = "G" });
-			db.Customers.Add(new Customer() { LastName = "A" });
-			db.Customers.Add(new Customer() { LastName = "B" });
-			db.SaveChanges();
 			
 		}
 
@@ -120,7 +117,7 @@ namespace BillingManagement.UI.ViewModels
 		{
 			if (VM == customerViewModel)
 			{
-				var c = new Customer() { Name = "TBD" };
+				var c = new Customer() { Name = "TBD", LastName = "TBD" };
 				db.Customers.Add(c);
 				db.SaveChanges();
 				customerViewModel.Customers.Clear();
@@ -128,6 +125,9 @@ namespace BillingManagement.UI.ViewModels
 				customerViewModel.SelectedCustomer = c;
 			}
 		}
+
+		
+
 
 		private bool CanAddNewItem(object o)
 		{

@@ -1,18 +1,19 @@
-﻿using BillingManagement.Business;
-using BillingManagement.Models;
+﻿using BillingManagement.Models;
 using BillingManagement.UI.ViewModels.Commands;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Documents;
 
 namespace BillingManagement.UI.ViewModels
 {
     public class CustomerViewModel : BaseViewModel
     {
-       // readonly CustomersDataService customersDataService = new CustomersDataService();
 
         private ObservableCollection<Customer> customers;
         private Customer selectedCustomer;
+
+        public BillingContext db { get; set; }
 
         public ObservableCollection<Customer> Customers
         {
@@ -36,14 +37,15 @@ namespace BillingManagement.UI.ViewModels
 
         public RelayCommand<Customer> DeleteCustomerCommand { get; private set; }
 
-
-        public CustomerViewModel(ObservableCollection<Customer> c)
+        // CTOR
+        public CustomerViewModel(ObservableCollection<Customer> c, BillingContext _db)
         {
-            Customers = c;
             DeleteCustomerCommand = new RelayCommand<Customer>(DeleteCustomer, CanDeleteCustomer);
 
+            Customers = c;
+            db = _db;
+            
         }
-
 
         private void DeleteCustomer(Customer c)
         {
@@ -51,22 +53,20 @@ namespace BillingManagement.UI.ViewModels
 
             if (currentIndex > 0) currentIndex--;
 
-            SelectedCustomer = Customers[currentIndex];
+            db.Remove(c);
+            db.SaveChanges();
+            Customers = new ObservableCollection<Customer>(db.Customers.OrderBy(c => c.LastName));
 
-            Customers.Remove(c);
+            SelectedCustomer = Customers[currentIndex];
         }
 
         private bool CanDeleteCustomer(Customer c)
         {
             if (c == null) return false;
 
-            
+
             return c.Invoices.Count == 0;
         }
-
-
-
-
 
     }
 }
