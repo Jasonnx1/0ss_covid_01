@@ -8,7 +8,7 @@ namespace BillingManagement.UI.ViewModels
 {
     public class CustomerViewModel : BaseViewModel
     {
-        readonly CustomersDataService customersDataService = new CustomersDataService();
+       // readonly CustomersDataService customersDataService = new CustomersDataService();
 
         private ObservableCollection<Customer> customers;
         private Customer selectedCustomer;
@@ -39,15 +39,15 @@ namespace BillingManagement.UI.ViewModels
         public CustomerViewModel()
         {
             DeleteCustomerCommand = new RelayCommand<Customer>(DeleteCustomer, CanDeleteCustomer);
-            
-
             InitValues();
         }
 
         private void InitValues()
         {
-            Customers = new ObservableCollection<Customer>(customersDataService.GetAll());
-            Debug.WriteLine(Customers.Count);
+            /*
+                   Customers = new ObservableCollection<Customer>(customersDataService.GetAll());
+                   Debug.WriteLine(Customers.Count);
+            */
         }
 
         private void DeleteCustomer(Customer c)

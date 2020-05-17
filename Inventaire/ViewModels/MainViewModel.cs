@@ -2,6 +2,8 @@
 using BillingManagement.UI.ViewModels.Commands;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace BillingManagement.UI.ViewModels
@@ -19,6 +21,19 @@ namespace BillingManagement.UI.ViewModels
 			}
 		}
 
+		private ObservableCollection<Customer> customers { get; set; }
+
+		public ObservableCollection<Customer> Customers
+		{
+			get => customers;
+			set
+			{
+				customers = value;
+				OnPropertyChanged();
+			}
+		}
+
+
 		private string searchCriteria;
 
 		public string SearchCriteria
@@ -30,9 +45,20 @@ namespace BillingManagement.UI.ViewModels
 			}
 		}
 
+		private Customer selectedCustomer { get; set; }
+		public Customer SelectedCustomer
+		{
+			get => selectedCustomer;
+			set
+			{
+				selectedCustomer = value;
+				OnPropertyChanged();
+			}
+		}
 
-		CustomerViewModel customerViewModel;
-		InvoiceViewModel invoiceViewModel;
+
+		public CustomerViewModel customerViewModel;
+		public InvoiceViewModel invoiceViewModel;
 
 		public ChangeViewCommand ChangeViewCommand { get; set; }
 
@@ -60,6 +86,13 @@ namespace BillingManagement.UI.ViewModels
 			invoiceViewModel = new InvoiceViewModel(customerViewModel.Customers);
 
 			VM = customerViewModel;
+
+		}
+
+		void initValues()
+		{
+
+			
 
 		}
 
@@ -100,8 +133,11 @@ namespace BillingManagement.UI.ViewModels
 			if (VM == customerViewModel)
 			{
 				var c = new Customer();
-				customerViewModel.Customers.Add(c);
-				customerViewModel.SelectedCustomer = c;
+				db.Customers.Add(c);
+				Customers.Clear();
+				Customers = new ObservableCollection<Customer>(db.Customers);
+				SelectedCustomer = c;
+				db.SaveChanges();
 			}
 		}
 
