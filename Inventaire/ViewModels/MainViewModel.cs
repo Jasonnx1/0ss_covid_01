@@ -21,17 +21,7 @@ namespace BillingManagement.UI.ViewModels
 			}
 		}
 
-		private ObservableCollection<Customer> customers { get; set; }
 
-		public ObservableCollection<Customer> Customers
-		{
-			get => customers;
-			set
-			{
-				customers = value;
-				OnPropertyChanged();
-			}
-		}
 
 
 		private string searchCriteria;
@@ -45,16 +35,6 @@ namespace BillingManagement.UI.ViewModels
 			}
 		}
 
-		private Customer selectedCustomer { get; set; }
-		public Customer SelectedCustomer
-		{
-			get => selectedCustomer;
-			set
-			{
-				selectedCustomer = value;
-				OnPropertyChanged();
-			}
-		}
 
 
 		public CustomerViewModel customerViewModel;
@@ -81,20 +61,28 @@ namespace BillingManagement.UI.ViewModels
 			AddNewItemCommand = new DelegateCommand<object>(AddNewItem, CanAddNewItem);
 			AddInvoiceToCustomerCommand = new DelegateCommand<Customer>(AddInvoiceToCustomer);
 			db = new BillingContext();
+			
+			seedData();
 
-			customerViewModel = new CustomerViewModel();
+			customerViewModel = new CustomerViewModel( new ObservableCollection<Customer>(db.Customers.OrderBy(c => c.LastName)) );
 			invoiceViewModel = new InvoiceViewModel(customerViewModel.Customers);
 
 			VM = customerViewModel;
 
 		}
 
-		void initValues()
+
+		void seedData()
 		{
 
+			db.Customers.Add(new Customer() { LastName = "G" });
+			db.Customers.Add(new Customer() { LastName = "A" });
+			db.Customers.Add(new Customer() { LastName = "B" });
+			db.SaveChanges();
 			
-
 		}
+
+
 
 		private void ChangeView(string vm)
 		{
@@ -132,12 +120,12 @@ namespace BillingManagement.UI.ViewModels
 		{
 			if (VM == customerViewModel)
 			{
-				var c = new Customer();
+				var c = new Customer() { Name = "TBD" };
 				db.Customers.Add(c);
-				Customers.Clear();
-				Customers = new ObservableCollection<Customer>(db.Customers);
-				SelectedCustomer = c;
 				db.SaveChanges();
+				customerViewModel.Customers.Clear();
+				customerViewModel.Customers = new ObservableCollection<Customer>(db.Customers.OrderBy(c => c.LastName));
+				customerViewModel.SelectedCustomer = c;
 			}
 		}
 
