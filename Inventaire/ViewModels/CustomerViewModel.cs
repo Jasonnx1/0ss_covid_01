@@ -37,6 +37,7 @@ namespace BillingManagement.UI.ViewModels
 
         public RelayCommand<Customer> DeleteCustomerCommand { get; private set; }
         public RelayCommand<object> SaveCommand { get; set; }
+        
 
         // CTOR
         public CustomerViewModel(BillingContext _db)
@@ -53,6 +54,7 @@ namespace BillingManagement.UI.ViewModels
         {
             Customers.Clear();
             Customers = new ObservableCollection<Customer>(db.Customers.OrderBy(c => c.LastName));
+            
         }
 
         public void Save(object c)

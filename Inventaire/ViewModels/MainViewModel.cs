@@ -57,11 +57,8 @@ namespace BillingManagement.UI.ViewModels
 
 		public RelayCommand<object> SaveCommand { get; set; }
 		
+		public RelayCommand<object> SearchCommand { get; set; }
 
-		public void Save(object c)
-		{
-			db.SaveChanges();
-		}
 
 		public MainViewModel()
 		{
@@ -69,6 +66,7 @@ namespace BillingManagement.UI.ViewModels
 			DisplayInvoiceCommand = new DelegateCommand<Invoice>(DisplayInvoice);
 			DisplayCustomerCommand = new DelegateCommand<Customer>(DisplayCustomer);
 			ExitClickCommand = new RelayCommand<IClosable>(Exit);
+			SearchCommand = new RelayCommand<object>(Search, CanExecuteSearch);
 
 			SaveCommand = new RelayCommand<object>(Save);
 
@@ -84,8 +82,32 @@ namespace BillingManagement.UI.ViewModels
 
 		}
 
+		public void Search(object s)
+		{
+			
+			customerViewModel.Customers.Clear();
+			customerViewModel.Customers = new ObservableCollection<Customer>(db.Customers.Where(c => c.LastName.ToUpper().StartsWith(SearchCriteria.ToUpper())).OrderBy(c => c.LastName));
 
+			try
+			{
+				customerViewModel.SelectedCustomer = customerViewModel.Customers.First();
 
+			}
+			catch (Exception e) { MessageBox.Show(e.Message); };
+			
+		}
+
+		public bool CanExecuteSearch(object s)
+		{
+			bool result = false;
+			result = VM == customerViewModel;
+			return result;
+		}
+
+		public void Save(object c)
+		{
+			db.SaveChanges();
+		}
 
 
 		private void ChangeView(string vm)
