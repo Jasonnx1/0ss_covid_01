@@ -1,4 +1,6 @@
-﻿using BillingManagement.UI.ViewModels;
+﻿using BillingManagement.Models;
+using BillingManagement.UI.ViewModels;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -8,7 +10,7 @@ namespace Inventaire
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindowView : Window
+    public partial class MainWindowView : Window, IClosable
     {
 
         public MainWindowView()
@@ -18,11 +20,16 @@ namespace Inventaire
             DataContext = new MainViewModel();
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e)
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
         {
-            App.Current.Shutdown();
+            throw new NotImplementedException();
         }
 
-
+        public void Execute(object parameter)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

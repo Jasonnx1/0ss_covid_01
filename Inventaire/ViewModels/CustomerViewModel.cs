@@ -55,6 +55,7 @@ namespace BillingManagement.UI.ViewModels
 
             db.Remove(c);
             db.SaveChanges();
+            Customers.Clear();
             Customers = new ObservableCollection<Customer>(db.Customers.OrderBy(c => c.LastName));
 
             SelectedCustomer = Customers[currentIndex];
