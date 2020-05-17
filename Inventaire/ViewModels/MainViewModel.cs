@@ -38,6 +38,8 @@ namespace BillingManagement.UI.ViewModels
 
 		public DelegateCommand<object> AddNewItemCommand { get; private set; }
 
+		public BillingContext db { get; set; }
+
 		public DelegateCommand<Invoice> DisplayInvoiceCommand { get; private set; }
 		public DelegateCommand<Customer> DisplayCustomerCommand { get; private set; }
 
@@ -52,6 +54,7 @@ namespace BillingManagement.UI.ViewModels
 
 			AddNewItemCommand = new DelegateCommand<object>(AddNewItem, CanAddNewItem);
 			AddInvoiceToCustomerCommand = new DelegateCommand<Customer>(AddInvoiceToCustomer);
+			db = new BillingContext();
 
 			customerViewModel = new CustomerViewModel();
 			invoiceViewModel = new InvoiceViewModel(customerViewModel.Customers);
